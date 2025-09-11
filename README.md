@@ -58,7 +58,8 @@
 3. 输入命名空间名称：`home_kv`
 4. 点击 **"添加"**
 
-![创建KV](upload://yn6OSre0wiIypXWiF0x4wK8OxzH.png)
+<img width="1035" height="414" alt="image" src="https://github.com/user-attachments/assets/2d1a6c10-2a17-4e91-ac9f-a5eaf50baca4" />
+
 
 #### 2.2 绑定 KV 到 Worker
 
@@ -70,7 +71,7 @@
    - **KV 命名空间：** 选择刚创建的 `home_kv`
 5. 点击 **"保存并部署"**
 
-![绑定KV](upload://bZ7B45oGZeu986AObxX6FVZs4z9.png)
+<img width="1071" height="602" alt="image" src="https://github.com/user-attachments/assets/ac657c58-3ff7-4fa8-b355-b4fbd16c9ec8" />
 
 ### 🎨 第三步：部署前端页面（Cloudflare Pages）
 
