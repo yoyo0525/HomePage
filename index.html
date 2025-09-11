@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人主页 - 阿布白</title>
+    <link rel="stylesheet" href="./static/style.css">
+    <link rel="shortcut icon" href="./static/f2.png">
+    <link rel="stylesheet" href="./static/fontawesome.css">
+</head>
+<body>
+    <div class="main-container">
+        <!-- 左侧个人信息 -->
+        <aside class="sidebar">
+            <section class="profile-section">
+                <div class="profile-avatar">
+                    <img src="" alt="头像">
+                    <div class="avatar-decorations">
+                    </div>
+                </div>
+                
+                <div class="profile-info">
+                    <div class="status">
+                        <span class="emoji"></span>
+                        <span class="title"></span>
+                    </div>
+                    <div class="quote">
+                        <span class="emoji">📝</span>
+                        <span></span>
+                    </div>
+                    
+                    <div class="social-links">
+                        <a href="" target="_blank"><i class="fas fa-github"></i></a>
+                        <a href="" target="_blank"><i class="fas fa-envelope"></i></a>
+                        <a href="" target="_blank"><i class="fas fa-paper-plane"></i></a>
+                        <a href="#" onclick="showIframe()" title="夏日空调"><i class="fas fa-circle"></i></a>
+                    </div>
+                    
+                    <div class="location-info">
+                        <div class="location">
+                            <i class="fa fa-map-marker"></i>
+                            <span></span>
+                        </div>
+                        <div class="name">
+                            <i class="fas fa-briefcase"></i>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 个人标签 -->
+            <section class="tags-section">
+            </section>
+                        
+            <!-- 技能展示 -->
+            <section class="skills-section">
+                <h2><i class="fas fa-heart"></i> 欢迎您</h2>
+                <div class="stat-item">
+                    <span class="stat-label">访客IP: </span>
+                    <span class="stat-number blur-effect" id="visitor-ip">获取中...</span>
+                </div>
+            </section>
+            <br>
+            <!-- 时间线 -->
+            <section class="timeline-section">
+            </section>
+        </aside>
+        
+        <!-- 右侧内容区域 -->
+        <main class="content-area">
+
+            <!-- GitHub 贡献图 -->
+            <section class="contribution-section">
+                <h2>
+                    <span id="contribution-title" class="contribution-title"><i class="fab fa-github"></i> GitHub 贡献图</span>
+                    <div id="contribution-header-placeholder" class="contribution-header-placeholder"></div>
+                </h2>
+                <div id="contribution-chart" class="contribution-chart">
+                    <div class="loading-placeholder">
+                        <div class="loading-spinner"></div>
+                        <span>加载贡献数据中...</span>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 站点展示 -->
+            <section class="sites-section">
+                <h2><i class="fas fa-globe"></i> WebSite</h2>
+                <div class="sites-grid">
+                </div>
+            </section>
+            
+            <!-- 项目展示 -->
+            <section class="projects-section">
+                <h2><i class="fas fa-cube"></i> 项目集</h2>
+                <div class="projects-grid">
+                </div>
+            </section>
+            
+            <!-- 技能展示 -->
+            <section class="skills-section">
+                <h2><i class="fas fa-wrench"></i> 技能栈</h2>
+                <div class="skills-icons">
+            </section>
+        </main>
+    </div>
+    <footer>
+            <p>© 2025 WebSite by <a id="footer-link" href="#" target="_blank">阿布白(IonRh)</a></p>
+    </footer>
+</body>
+<script src="./static/script.js"></script>
+</html>
