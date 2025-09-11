@@ -1,125 +1,178 @@
-# 🏠 阿布白（IonRh）的主页
+# 🏠 个人主页项目
 
-一个使用原生 HTML、CSS、JS 构建的个人主页项目，未依赖任何框架或插件，保证轻量高效。包含前端展示页面和后台管理系统，让你轻松定制自己的个人主页。
+一个使用原生 HTML、CSS、JavaScript 构建的个人主页项目，无需任何框架依赖，轻量高效。包含前端展示页面和后台管理系统，让你轻松定制属于自己的个人主页。
+
+## 🌟 项目特色
+
+- 🎨 **简洁美观** - 现代化设计风格，清爽的主页展示界面
+- 🔧 **后台管理** - 便捷的数据管理系统，无需修改代码
+- 📱 **响应式设计** - 完美适配手机、平板、桌面等各种设备
+- ⚡ **极速加载** - 原生代码构建，零依赖，性能优异
+- 🌐 **免费部署** - 基于 Cloudflare 免费服务，无需服务器成本
 
 ## 🌐 在线演示
 
-**演示站点：** http://home.loadke.tech/
+- **前端展示页面：** http://home.loadke.tech/
+- **后台管理系统：** https://divine-pine-fef2.likhappy.workers.dev/manage
 
-## ✨ 项目特色
+## 🚀 部署教程
 
-- 🎨 **简洁美观** - 提供清爽的主页展示界面
-- 🌐 **后台管理** - 提供方便的后台数据管理系统
-- 📱 **响应式设计** - 完美适配手机、平板、桌面等各种设备
-- ⚡ **极速加载** - 原生代码构建，优化性能，提升用户浏览体验
-- 🔧 **易于定制** - 通过后台管理界面轻松修改数据，无需直接修改源码
+### 📋 准备工作
 
-## 🚀 快速开始
+在开始之前，你需要：
+- 一个 [Cloudflare](https://dash.cloudflare.com/) 账户（免费）
+- 一个 GitHub 账户
 
-### 第一步：部署后端服务（Cloudflare Workers）
+### 🔧 第一步：部署后端服务（Cloudflare Workers）
 
-1. **创建 Worker**
-   - 登录 [Cloudflare Dashboard](https://dash.cloudflare.com/)
-   - 进入 Workers & Pages 页面
-   - 点击 "创建应用程序" → "创建 Worker"
+#### 1.1 创建 Worker
 
-   <img width="1767" height="969" alt="创建Worker" src="https://github.com/user-attachments/assets/15eb903e-e288-409e-8aca-2c7fca57fee1" />
+1. 登录 [Cloudflare Dashboard](https://dash.cloudflare.com/)
+2. 点击左侧菜单 **"Workers 和 Pages"**
+3. 点击 **"创建应用程序"** → **"创建 Worker"**
 
-2. **配置 Worker**
-   - 点击 "开始使用"
+<img width="1767" alt="创建Worker" src="https://webproxy.badking.pp.ua/https://github.com/user-attachments/assets/15eb903e-e288-409e-8aca-2c7fca57fee1" />
 
-   <img width="1746" height="864" alt="开始使用" src="https://github.com/user-attachments/assets/1590eea9-7f9c-42e4-855e-6aa6618aeb16" />
+#### 1.2 配置 Worker
 
-3. **部署代码**
-   - 点击 "部署" 后，选择 "编辑代码"
+1. 为你的 Worker 起一个名称（建议：`your-name-homepage`）
+2. 点击 **"部署"**
+3. 部署完成后，点击 **"编辑代码"**
 
-   <img width="2016" height="966" alt="编辑代码" src="https://github.com/user-attachments/assets/3b4ab43a-abac-4c24-8019-525c294a4cbc" />
+<img width="2016" alt="编辑代码" src="https://webproxy.badking.pp.ua/https://github.com/user-attachments/assets/3b4ab43a-abac-4c24-8019-525c294a4cbc" />
 
-   - 将 `worker.js` 文件中的代码完整复制到左侧代码编辑器中
-   - 点击 "部署" 完成部署
+#### 1.3 部署代码
 
-   <img width="2537" height="1311" alt="部署代码" src="https://github.com/user-attachments/assets/3de35041-7db2-4297-a6c8-591f3cbdddaf" />
+1. 将项目中 `worker.js` 文件的完整代码复制到左侧编辑器
+2. 点击 **"保存并部署"**
+3. 记录下你的 Worker 域名：`https://your-worker-name.your-subdomain.workers.dev`
 
-4. **获取访问地址**
-   - 部署成功后，记录下你的 Worker 域名，格式如：`https://your-worker-name.your-subdomain.workers.dev`
+<img width="2537" alt="部署代码" src="https://webproxy.badking.pp.ua/https://github.com/user-attachments/assets/3de35041-7db2-4297-a6c8-591f3cbdddaf" />
 
-### 第二步：配置后台管理
+### 💾 第二步：配置数据存储（KV 数据库）
 
-1. **访问后台管理界面**
-   - 在浏览器中访问：`https://your-worker-domain/manage`
-   - 默认登录信息：
-     - 用户名：`admin`
-     - 密码：`admin123`
+#### 2.1 创建 KV 命名空间
 
-   <img width="936" height="635" alt="登录界面" src="https://github.com/user-attachments/assets/23975bdb-cc30-47ee-87f7-9fb4bb07d333" />
+1. 在 Cloudflare Dashboard 中，点击 **"Workers 和 Pages"** → **"KV"**
+2. 点击 **"创建命名空间"**
+3. 输入命名空间名称：`home_kv`
+4. 点击 **"添加"**
 
-2. **后台管理功能**
-   - 登录后即可看到管理界面，可以管理个人信息、项目展示等数据
+![创建KV](upload://yn6OSre0wiIypXWiF0x4wK8OxzH.png)
 
-   <img width="1766" height="1227" alt="管理界面" src="https://github.com/user-attachments/assets/f52ac415-88a6-476f-95e6-1f1099b92591" />
+#### 2.2 绑定 KV 到 Worker
 
-### 第三步：部署前端页面（Cloudflare Pages）
+1. 返回到你的 Worker 页面
+2. 点击 **"设置"** → **"变量"**
+3. 在 **"KV 命名空间绑定"** 部分，点击 **"添加绑定"**
+4. 配置绑定：
+   - **变量名：** `MY_HOME_KV`
+   - **KV 命名空间：** 选择刚创建的 `home_kv`
+5. 点击 **"保存并部署"**
 
-1. **Fork 项目**
-   - Fork 本仓库到你的 GitHub 账户
+![绑定KV](upload://bZ7B45oGZeu986AObxX6FVZs4z9.png)
 
-2. **修改配置文件**
-   - 编辑 `/static/script.js` 文件
-   - 将文件中的 API 域名修改为你在第一步中获得的 Worker 域名：
-     ```javascript
-     const API_BASE = 'https://your-worker-domain.workers.dev';
-     ```
+### 🎨 第三步：部署前端页面（Cloudflare Pages）
 
-   <img width="2049" height="813" alt="修改配置" src="https://github.com/user-attachments/assets/70c2778d-f84e-46c6-a830-61ee37423f3d" />
+#### 3.1 Fork 项目
 
-3. **部署到 Cloudflare Pages**
-   - 登录 [Cloudflare Dashboard](https://dash.cloudflare.com/)
-   - 进入 Workers & Pages 页面
-   - 点击 "创建应用程序" → "Pages" → "连接到 Git"
-   - 选择你 Fork 的仓库并完成部署配置
+1. 访问本项目的 GitHub 仓库
+2. 点击右上角 **"Fork"** 按钮，将项目复制到你的账户
 
-   <img width="2538" height="1092" alt="部署Pages" src="https://github.com/user-attachments/assets/1decf2ca-3864-4f9f-b308-ee9cdc7a5af3" />
+#### 3.2 修改配置文件
 
-### 第四步：完成配置
+1. 在你 Fork 的仓库中，编辑 `static/script.js` 文件
+2. 找到以下代码行：
+   ```javascript
+   const API_BASE = 'https://your-worker-domain.workers.dev';
+   ```
+3. 将 `your-worker-domain.workers.dev` 替换为你在第一步中获得的 Worker 域名
 
-1. **修改默认密码**
-   - 首次登录后台管理界面后，请立即修改默认密码
-   - 在管理界面中更新你的个人信息、项目展示等数据
+<img width="2049" alt="修改配置" src="https://webproxy.badking.pp.ua/https://github.com/user-attachments/assets/70c2778d-f84e-46c6-a830-61ee37423f3d" />
 
-2. **测试访问**
-   - 访问你的 Pages 域名，查看个人主页效果
-   - 确认后台管理功能正常工作
+#### 3.3 部署到 Cloudflare Pages
 
-## 📋 项目结构
+1. 在 Cloudflare Dashboard 中，点击 **"Workers 和 Pages"**
+2. 点击 **"创建应用程序"** → **"Pages"** → **"连接到 Git"**
+3. 选择你 Fork 的仓库
+4. 配置构建设置：
+   - **框架预设：** 无（或静态站点）
+   - **构建命令：** 留空
+   - **构建输出目录：** `/` 或留空
+5. 点击 **"保存并部署"**
 
-```
-HomePage/
-├── static/           # 前端静态文件
-│   ├── index.html   # 主页面
-│   ├── script.js    # 主要脚本（需要修改API地址）
-│   └── style.css    # 样式文件
-├── worker.js        # Cloudflare Worker 后端代码
-└── README.md        # 项目说明文档
-```
+<img width="2538" alt="部署Pages" src="https://webproxy.badking.pp.ua/https://github.com/user-attachments/assets/1decf2ca-3864-4f9f-b308-ee9cdc7a5af3" />
 
-## 🔧 自定义配置
+### ✅ 第四步：完成配置
 
-- **修改样式**：编辑 `static/style.css` 文件
-- **修改内容**：通过后台管理界面更新数据
-- **修改功能**：编辑 `static/script.js` 和 `worker.js` 文件
+#### 4.1 访问后台管理
 
-## 📝 注意事项
+1. 在浏览器中访问：`https://your-worker-domain.workers.dev/manage`
+2. 使用默认登录信息：
+   - **用户名：** `admin`
+   - **密码：** `admin123`
 
-- ⚠️ 请务必修改默认的管理员密码
-- 🔗 确保 Worker 域名配置正确，否则前端无法正常获取数据
-- 🌐 如需自定义域名，请在 Cloudflare 中进行相应配置
-- 📱 项目已适配移动端，无需额外配置
-- 🐛 如遇到问题，欢迎提交 Issue 反馈
+<img width="936" alt="登录界面" src="https://webproxy.badking.pp.ua/https://github.com/user-attachments/assets/23975bdb-cc30-47ee-87f7-9fb4bb07d333" />
+
+#### 4.2 修改默认设置
+
+1. **⚠️ 立即修改默认密码** - 这很重要！
+2. 更新个人信息、项目展示等数据
+3. 保存所有更改
+
+<img width="1766" alt="管理界面" src="https://webproxy.badking.pp.ua/https://github.com/user-attachments/assets/f52ac415-88a6-476f-95e6-1f1099b92591" />
+
+#### 4.3 测试访问
+
+1. 访问你的 Pages 域名，查看个人主页效果
+2. 确认数据能正常从后台加载
+3. 测试后台管理功能是否正常
+
+## 🎨 自定义指南
+
+### 样式自定义
+编辑 `static/style.css` 文件来修改页面样式和布局
+
+### 内容管理
+通过后台管理界面更新：
+- 个人基本信息
+- 项目展示内容
+- 社交媒体链接
+- 技能标签等
+
+### 功能扩展
+- 编辑 `static/script.js` 修改前端逻辑
+- 编辑 `worker.js` 修改后端 API
+
+## ⚠️ 重要注意事项
+
+- 🔐 **安全第一**：部署完成后立即修改默认管理员密码
+- 🔗 **域名配置**：确保 Worker 域名在前端配置中正确设置
+- 📱 **移动适配**：项目已内置响应式设计，无需额外配置
+- 🌐 **自定义域名**：可在 Cloudflare 中配置自定义域名
+- 💾 **数据备份**：建议定期备份重要的个人数据
+
+## 🐛 常见问题
+
+### Q: 前端页面无法加载数据？
+A: 检查 `static/script.js` 中的 API_BASE 配置是否正确
+
+### Q: 后台管理无法访问？
+A: 确认 Worker 已正确部署，并且 KV 数据库已正确绑定
+
+### Q: 忘记管理员密码怎么办？
+A: 需要重新部署 Worker 代码来重置密码
 
 ## 📄 许可证
 
-**修改时请保留原作者信息**
+本项目采用开源许可证，**修改时请保留原作者信息**。
 
 ## 📸 页面预览
 
-![主页截图](https://github.com/user-attachments/assets/de8bed1f-934e-4fee-958e-298becd5269f)
+![主页截图](https://webproxy.badking.pp.ua/https://github.com/user-attachments/assets/de8bed1f-934e-4fee-958e-298becd5269f)
+
+---
+
+**🎉 恭喜！你的个人主页已经部署完成！**
+
+如果在部署过程中遇到任何问题，欢迎提交 Issue 或寻求帮助。
