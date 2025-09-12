@@ -38,7 +38,7 @@ body::before {
     padding: 30px;
     max-width: 1400px;
     margin: 0 auto;
-    min-height: 100vh;
+    min-height: auto;
     position: relative;
     z-index: 1;
 }
@@ -1026,15 +1026,58 @@ body::before {
 
 footer {
     text-align: center;
-    margin-top: 0rem;
-    padding-top: 0rem;
-    /* border-top: 1px solid rgb(255 255 255 / 19%); */
-    font-size: 0.9rem;
-    color: #ffffff6e;
+    /* margin-top: 2rem; */
+    padding: 0.5rem 0;
+    position: relative;
 }
+
+footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+}
+
+footer p {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    margin: 0;
+    line-height: 1.6;
+}
+
 footer a {
-    color: #a8d6ff;
+    color: #74b9ff;
     text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 0 2px;
+}
+
+footer a:hover {
+    color: #ffffff;
+    text-shadow: 0 0 8px rgba(116, 185, 255, 0.6);
+}
+
+footer a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: linear-gradient(90deg, #74b9ff, #a8d6ff);
+    transition: width 0.3s ease;
+}
+
+footer a:hover::after {
+    width: 100%;
 }
 
 /* 移动端响应式样式 */
