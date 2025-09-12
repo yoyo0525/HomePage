@@ -147,3 +147,11 @@
 **🎉 恭喜！你的个人主页已经部署完成！**
 
 如果在部署过程中遇到任何问题，欢迎提交 Issue 或寻求帮助。
+
+<a href="https://github.com/IonRh/HomePage/stargazers" target="_blank" style="display: block" align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=IonRh/HomePage&type=Timeline&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=IonRh/HomePage&type=Timeline" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=IonRh/HomePage&type=Timeline" />
+  </picture>
+</a>
