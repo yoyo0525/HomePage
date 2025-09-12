@@ -58,7 +58,9 @@ async function handleRequest(request) {
             tagsData: [],
             imagesData: [],
             profileData: {},
-            locationData: {}
+            locationData: {},
+            ice: false,
+            thema: false
           },
           last_time: null
         }
@@ -102,13 +104,15 @@ async function handleRequest(request) {
         })
       }
       // 设置默认字段
-      const requiredFields = ['github', 'web_info', 'quoteData', 'timelineData', 'projectsData', 'sitesData', 'skillsData', 'socialData', 'tagsData', 'imagesData', 'profileData', 'locationData'];
+      const requiredFields = ['github', 'web_info', 'quoteData', 'timelineData', 'projectsData', 'sitesData', 'skillsData', 'socialData', 'tagsData', 'imagesData', 'profileData', 'locationData', 'ice', 'thema'];
       for (const field of requiredFields) {
         if (!(field in newData.data)) {
           if (field.endsWith('Data')) {
             newData.data[field] = [];
           } else if (field === 'web_info' || field === 'profileData' || field === 'locationData') {
             newData.data[field] = {};
+          } else if (field === 'ice' || field === 'thema') {
+            newData.data[field] = false;
           } else {
             newData.data[field] = '';
           }
@@ -524,7 +528,18 @@ function getManagementPage() {
             <button onclick="showTab('tags')" class="tab-button px-3 py-1.5 border border-gray-300 rounded text-sm">标签</button>
             <button onclick="showTab('images')" class="tab-button px-3 py-1.5 border border-gray-300 rounded text-sm">图片</button>
             <button onclick="showTab('json')" class="tab-button px-3 py-1.5 border border-gray-300 rounded text-sm">JSON</button>
+            <div class="ml-auto flex items-center gap-2">
+              <label class="inline-flex items-center text-sm text-gray-700 bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded cursor-pointer">
+                <input type="checkbox" id="iceToggle" class="mr-2">
+                开启夏日空调（ice）
+              </label>
+              <label class="inline-flex items-center text-sm text-gray-700 bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded cursor-pointer">
+                <input type="checkbox" id="themaToggle" class="mr-2">
+                开启背景切换（thema）
+              </label>
+            </div>
           </div>
+
         </div>
   
         <!-- 基本信息 -->
@@ -780,9 +795,13 @@ function getManagementPage() {
     function populateFields(data) {
       document.getElementById('github').value = data.github || '';
       document.getElementById('webTitle').value = data.web_info?.title || '';
-      document.getElementById('webIcon').value = data.web_info?.icon || '';
+            document.getElementById('webIcon').value = data.web_info?.icon || '';
       document.getElementById('quote').value = data.quoteData || '';
 
+      // 布尔开关
+      document.getElementById('iceToggle').checked = !!data.ice;
+      document.getElementById('themaToggle').checked = !!data.thema;
+      
       // 填充个人信息
       document.getElementById('statusTitle').value = data.profileData?.statusTitle || '';
       document.getElementById('statusEmoji').value = data.profileData?.statusEmoji || '';
@@ -1071,6 +1090,10 @@ function getManagementPage() {
         icon: document.getElementById('webIcon').value
       };
       currentData.data.quoteData = document.getElementById('quote').value;
+
+      // 收集开关
+      currentData.data.ice = !!document.getElementById('iceToggle').checked;
+      currentData.data.thema = !!document.getElementById('themaToggle').checked;
 
       // 收集个人信息数据
       currentData.data.profileData = {

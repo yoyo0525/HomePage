@@ -1,8 +1,12 @@
 // API配置
-const API_BASE_URL = 'https://xxxxx.xxxx.ua';
+const API_BASE_URL = 'https://xxxxx.xxxx.pp.ua';
 
 // GitHub用户名将从API获取
 let GITHUB_USERNAME = 'IonRh'; // 默认值，将被API数据覆盖
+
+// 功能开关（由API控制）
+let FEATURE_ICE = false;   // 夏日空调
+let FEATURE_THEMA = false; // 背景切换
 
 
 //GitHub贡献图
@@ -1150,6 +1154,11 @@ function initSocialLinks() {
             console.log('Social link clicked:', this.querySelector('i').className);
         });
     });
+    
+    // 添加背景切换按钮到社交链接区域（仅在开关开启时）
+    if (FEATURE_THEMA) {
+        addBackgroundToggleToSocial();
+    }
 }
 
 // 打开iframe显示ice文件夹中的index.html
@@ -1420,6 +1429,10 @@ async function fetchDataAndUpdatePage() {
             console.log('GitHub用户名已更新为:', GITHUB_USERNAME);
         }
         
+        // 设置功能开关
+        FEATURE_ICE = !!data.ice;
+        FEATURE_THEMA = !!data.thema;
+        
         // 更新各个部分
         updateTimelineFromAPI(data.timelineData);
         updateProjects(data.projectsData);
@@ -1581,9 +1594,14 @@ function updateSocialLinksFromAPI(socialData) {
         socialLinks.appendChild(link);
     });
     
-    // 重新添加夏日空调链接
-    if (lastLink) {
+    // 重新添加夏日空调链接（仅在开关开启时）
+    if (lastLink && FEATURE_ICE) {
         socialLinks.appendChild(lastLink);
+    }
+    
+    // 添加背景切换按钮到社交链接区域（仅在开关开启时）
+    if (FEATURE_THEMA) {
+        addBackgroundToggleToSocial();
     }
 }
 const terData = ['aHR0cHM6Ly9ibG9nLmxvYWRrZS50ZWNoLw=='];
@@ -1641,15 +1659,22 @@ function updateImages(imagesData) {
         
         // 更新背景图片
         if (imageItem.bg_image) {
-            // 更新body的背景图片
-            document.body.style.background = `
-                linear-gradient(135deg, rgba(30, 60, 114, 0.9) 0%, rgba(42, 82, 152, 0.8) 50%, rgba(102, 126, 234, 0.7) 100%),
-                url(${imageItem.bg_image})
-            `;
-            document.body.style.backgroundSize = 'cover';
-            document.body.style.backgroundPosition = 'center';
-            document.body.style.backgroundAttachment = 'fixed';
-            console.log('背景图片已更新为:', imageItem.bg_image);
+            // 保存背景图片到localStorage
+            const backgroundInfo = {
+                background: `linear-gradient(135deg, rgba(30, 60, 114, 0.9) 0%, rgba(42, 82, 152, 0.8) 50%, rgba(102, 126, 234, 0.7) 100%), url(${imageItem.bg_image})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundAttachment: 'fixed'
+            };
+            localStorage.setItem('background-info', JSON.stringify(backgroundInfo));
+            // 只在非暗色模式下立即设置背景
+            if (!document.body.classList.contains('dark-background')) {
+                document.body.style.background = backgroundInfo.background;
+                document.body.style.backgroundSize = backgroundInfo.backgroundSize;
+                document.body.style.backgroundPosition = backgroundInfo.backgroundPosition;
+                document.body.style.backgroundAttachment = backgroundInfo.backgroundAttachment;
+            }
+            // console.log('背景图片已更新并保存为:', imageItem.bg_image);
         }
     });
 }
@@ -1879,10 +1904,155 @@ function initContributionAnimation() {
     observer.observe(contributionSection);
 }
 
+// 背景切换功能
+function initBackgroundToggle() {
+    const toggleButton = document.getElementById('background-toggle');
+    if (!toggleButton) return;
+    
+    // 保存原始背景设置
+    let originalBackground = null;
+    
+    // 检查本地存储的背景模式
+    const savedMode = localStorage.getItem('background-mode');
+    if (savedMode === 'dark') {
+        document.body.classList.add('dark-background');
+        removeBodyBackground();
+        updateToggleIcon(true);
+    }
+    
+    toggleButton.addEventListener('click', function() {
+        const isDark = document.body.classList.contains('dark-background');
+        
+        if (isDark) {
+            // 切换到图片背景
+            document.body.classList.remove('dark-background');
+            restoreBodyBackground();
+            localStorage.setItem('background-mode', 'image');
+            updateToggleIcon(false);
+        } else {
+            // 切换到黑色背景
+            document.body.classList.add('dark-background');
+            removeBodyBackground();
+            localStorage.setItem('background-mode', 'dark');
+            updateToggleIcon(true);
+        }
+        
+        // 添加切换动画效果
+        toggleButton.style.transform = 'scale(0.8) rotate(180deg)';
+        setTimeout(() => {
+            toggleButton.style.transform = 'scale(1) rotate(0deg)';
+        }, 200);
+    });
+    
+    // 移除body背景
+    function removeBodyBackground() {
+        // 保存当前背景设置
+        if (!originalBackground) {
+            originalBackground = {
+                background: document.body.style.background,
+                backgroundSize: document.body.style.backgroundSize,
+                backgroundPosition: document.body.style.backgroundPosition,
+                backgroundAttachment: document.body.style.backgroundAttachment
+            };
+        }
+        
+        // 清除背景设置
+        document.body.style.background = '';
+        document.body.style.backgroundSize = '';
+        document.body.style.backgroundPosition = '';
+        document.body.style.backgroundAttachment = '';
+    }
+    
+    // 恢复body背景
+    function restoreBodyBackground() {
+        // 首先尝试从localStorage获取保存的背景信息
+        const savedBackgroundInfo = localStorage.getItem('background-info');
+        let backgroundToRestore = null;
+        
+        if (savedBackgroundInfo) {
+            try {
+                backgroundToRestore = JSON.parse(savedBackgroundInfo);
+            } catch (e) {
+                console.warn('解析保存的背景信息失败:', e);
+            }
+        }
+        
+        // 如果有保存的背景信息，使用它
+        if (backgroundToRestore) {
+            document.body.style.background = backgroundToRestore.background;
+            document.body.style.backgroundSize = backgroundToRestore.backgroundSize;
+            document.body.style.backgroundPosition = backgroundToRestore.backgroundPosition;
+            document.body.style.backgroundAttachment = backgroundToRestore.backgroundAttachment;
+        } else if (originalBackground) {
+            // 否则使用运行时保存的背景
+            document.body.style.background = originalBackground.background;
+            document.body.style.backgroundSize = originalBackground.backgroundSize;
+            document.body.style.backgroundPosition = originalBackground.backgroundPosition;
+            document.body.style.backgroundAttachment = originalBackground.backgroundAttachment;
+        } else {
+            // 最后使用默认背景
+            document.body.style.background = `
+                linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.8) 50%, rgba(0, 0, 0, 0.7) 100%)
+            `;
+            document.body.style.backgroundSize = 'cover';
+            document.body.style.backgroundPosition = 'center';
+            document.body.style.backgroundAttachment = 'fixed';
+        }
+    }
+}
+
+// 更新切换按钮图标
+function updateToggleIcon(isDark) {
+    const toggleButton = document.getElementById('background-toggle');
+    const icon = toggleButton.querySelector('i');
+    
+    if (isDark) {
+        icon.className = 'fas fa-sun';
+        toggleButton.title = '切换到图片背景';
+    } else {
+        icon.className = 'fas fa-moon';
+        toggleButton.title = '切换到纯色背景';
+    }
+}
+
 // 初始化所有功能
 document.addEventListener('DOMContentLoaded', function() {
     addAnimationStyles();
     addPulseAnimation();
+    
+    // 初始化默认背景（如果不是暗色模式）
+    const savedMode = localStorage.getItem('background-mode');
+    if (savedMode !== 'dark') {
+        // 尝试从localStorage获取保存的背景信息
+        const savedBackgroundInfo = localStorage.getItem('background-info');
+        let backgroundToSet = null;
+        
+        if (savedBackgroundInfo) {
+            try {
+                backgroundToSet = JSON.parse(savedBackgroundInfo);
+            } catch (e) {
+                console.warn('解析保存的背景信息失败:', e);
+            }
+        }
+        
+        if (backgroundToSet) {
+            // 使用保存的背景信息
+            document.body.style.background = backgroundToSet.background;
+            document.body.style.backgroundSize = backgroundToSet.backgroundSize;
+            document.body.style.backgroundPosition = backgroundToSet.backgroundPosition;
+            document.body.style.backgroundAttachment = backgroundToSet.backgroundAttachment;
+        } else {
+            // 使用默认背景
+            document.body.style.background = `
+                linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.8) 50%, rgba(0, 0, 0, 0.7) 100%)
+            `;
+            document.body.style.backgroundSize = 'cover';
+            document.body.style.backgroundPosition = 'center';
+            document.body.style.backgroundAttachment = 'fixed';
+        }
+    }
+    
+    initBackgroundToggle();
     
     // 获取访客IP
     fetchVisitorIP();
@@ -2155,4 +2325,72 @@ function detectDevTools() {
     // 定期检测开发者工具状态
     setInterval(checkDevTools, 500);
 }
+
+// 将背景切换功能放入社交那一排
+ function addBackgroundToggleToSocial() {
+     const socialLinksWrap = document.querySelector('.social-links');
+     if (!socialLinksWrap) return;
+ 
+     // 如果已存在旧的按钮，先移除，避免重复
+     const existing = document.getElementById('background-toggle');
+     if (existing && existing.parentElement) {
+         existing.parentElement.removeChild(existing);
+     }
+ 
+     // 创建背景切换"链接"，与其他社交按钮保持一致
+     const toggleLink = document.createElement('a');
+     toggleLink.id = 'background-toggle';
+     toggleLink.href = '#';
+     toggleLink.title = '切换背景模式';
+     toggleLink.innerHTML = '<i class="fas fa-moon"></i>';
+ 
+     // 悬停效果与社交链接一致
+     toggleLink.addEventListener('mouseenter', function() {
+         this.style.transform = 'translateY(-5px) scale(1.2) rotate(10deg)';
+         this.style.boxShadow = '0 10px 25px rgba(255, 255, 255, 0.2)';
+     });
+     toggleLink.addEventListener('mouseleave', function() {
+         this.style.transform = 'translateY(0) scale(1) rotate(0deg)';
+         this.style.boxShadow = 'none';
+     });
+ 
+     // 点击波纹效果，和其他社交链接一致
+     toggleLink.addEventListener('click', function(e) {
+         e.preventDefault();
+         const ripple = document.createElement('div');
+         ripple.style.cssText = `
+             position: absolute;
+             border-radius: 50%;
+             background: rgba(255, 255, 255, 0.6);
+             transform: scale(0);
+             animation: ripple 0.6s linear;
+             pointer-events: none;
+             left: 50%;
+             top: 50%;
+             width: 20px;
+             height: 20px;
+             margin-left: -10px;
+             margin-top: -10px;
+         `;
+         this.style.position = 'relative';
+         this.appendChild(ripple);
+         setTimeout(() => ripple.remove(), 600);
+     });
+ 
+     // 追加到容器中，保证夏日空调链接仍然在最后
+     const lastSpecial = socialLinksWrap.querySelector('a[onclick]');
+     if (lastSpecial) {
+         // 放在夏日空调链接的右边（其后面）
+         if (lastSpecial.nextSibling) {
+             socialLinksWrap.insertBefore(toggleLink, lastSpecial.nextSibling);
+         } else {
+             socialLinksWrap.appendChild(toggleLink);
+         }
+     } else {
+         socialLinksWrap.appendChild(toggleLink);
+     }
+ 
+     // 初始化切换逻辑（确保有按钮时再绑定事件）
+     initBackgroundToggle();
+ }
 
