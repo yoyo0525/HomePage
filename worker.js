@@ -91,6 +91,17 @@ async function handleRequest(request) {
   }
 
   if (path === '/api/data' && request.method === 'POST') {
+    // 检查是否已登录
+    if (!(await checkAuth(request, kv))) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { 
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        }
+      })
+    }
+    
     try {
       const newData = await request.json()
       // 验证数据格式
@@ -274,12 +285,80 @@ async function checkAuth(request, kv) {
   const authToken = cookies.auth_token
   if (!authToken) return false
   
-  // 验证token（简单的时间戳验证）
   try {
-    const tokenData = JSON.parse(atob(authToken))
+    return await verifyToken(authToken, kv)
+  } catch {
+    return false
+  }
+}
+
+// 生成带签名的token
+async function generateToken(username, kv) {
+  let secretKey = await kv.get('secret_key')
+  if (!secretKey) {
+    secretKey = Array.from(crypto.getRandomValues(new Uint8Array(32)))
+      .map(b => b.toString(16).padStart(2, '0')).join('')
+    await kv.put('secret_key', secretKey)
+  }
+  
+  const payload = {
+    username: username,
+    timestamp: Date.now(),
+    salt: Math.random().toString(36).substring(2)
+  }
+  
+  const payloadStr = JSON.stringify(payload)
+  const payloadBase64 = btoa(payloadStr)
+  const key = await crypto.subtle.importKey(
+    'raw',
+    new TextEncoder().encode(secretKey),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  )
+  
+  const signature = await crypto.subtle.sign(
+    'HMAC',
+    key,
+    new TextEncoder().encode(payloadBase64)
+  )
+  
+  const signatureBase64 = btoa(String.fromCharCode(...new Uint8Array(signature)))
+  
+  return `${payloadBase64}.${signatureBase64}`
+}
+
+async function verifyToken(token, kv) {
+  const parts = token.split('.')
+  if (parts.length !== 2) return false
+  
+  const [payloadBase64, signatureBase64] = parts
+  
+  const secretKey = await kv.get('secret_key')
+  if (!secretKey) return false
+  
+  try {
+    const key = await crypto.subtle.importKey(
+      'raw',
+      new TextEncoder().encode(secretKey),
+      { name: 'HMAC', hash: 'SHA-256' },
+      false,
+      ['verify']
+    )
+    
+    const signature = Uint8Array.from(atob(signatureBase64), c => c.charCodeAt(0))
+    
+    const isValid = await crypto.subtle.verify(
+      'HMAC',
+      key,
+      signature,
+      new TextEncoder().encode(payloadBase64)
+    )
+    
+    if (!isValid) return false
+    const payload = JSON.parse(atob(payloadBase64))
     const now = Date.now()
-    // token有效期24小时
-    return (now - tokenData.timestamp) < 24 * 60 * 60 * 1000
+    return (now - payload.timestamp) < 24 * 60 * 60 * 1000
   } catch {
     return false
   }
@@ -291,26 +370,18 @@ async function handleLogin(request, kv) {
     const formData = await request.formData()
     const username = formData.get('username')
     const password = formData.get('password')
-    
-    // 从KV获取管理员凭证，如果不存在则使用默认值
+
     let adminCreds = await kv.get('admin_credentials', { type: 'json' })
     if (!adminCreds) {
-      // 默认账号密码
       adminCreds = {
         username: 'admin',
         password: 'admin123'
       }
-      // 保存默认凭证到KV
       await kv.put('admin_credentials', JSON.stringify(adminCreds))
     }
     
     if (username === adminCreds.username && password === adminCreds.password) {
-      // 生成简单的认证token
-      const token = btoa(JSON.stringify({
-        username: username,
-        timestamp: Date.now(),
-        salt: Math.random().toString(36).substring(2)  // 添加盐值增强安全性
-      }))
+      const token = await generateToken(username, kv)
       
       return new Response('', {
         status: 302,
