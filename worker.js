@@ -6,6 +6,7 @@ async function handleRequest(request) {
   const url = new URL(request.url)
   const path = url.pathname
 
+  
   // 获取KV命名空间
   const kv = MY_HOME_KV // 需在Workers dashboard中绑定
   if (!kv) {
